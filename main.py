@@ -1,3 +1,6 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' # Stop console from printing tensorflow info message
+
 import csv
 import re
 import pandas as pd
