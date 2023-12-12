@@ -7,10 +7,10 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 from sklearn.metrics import zero_one_loss
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Embedding, Bidirectional, Dense
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
+from keras.models import Sequential
+from keras.layers import LSTM, Embedding, Bidirectional, Dense
 
 
 def preprocess_text(text):
