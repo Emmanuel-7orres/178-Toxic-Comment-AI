@@ -22,7 +22,7 @@ Embedding:
     Allows for words with similar meaning to have similar vectors. Meaning the model begins to understand the relationship/similarities between words 
     '5000' is the size of the vocabulary (number of unique tokens)
     '100' is the dimensionality of the embedding vectors 
-    'input_length=100' means the input sequences are 100 tokens long
+    'input_length=n' means the input sequences are n tokens long
 
 Conv1D:
     Is a type of convolutional layer that slides filters across a sequence of data, in this case our sequences from Embedding.
