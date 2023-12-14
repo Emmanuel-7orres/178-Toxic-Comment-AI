@@ -6,12 +6,12 @@ import re
 import pandas as pd
 import numpy as np
 import tensorflow as tf
-from sklearn.metrics import zero_one_loss
+from sklearn.metrics import zero_one_loss, confusion_matrix
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import Sequential
 from keras.layers import LSTM, Embedding, Bidirectional, Dense, Conv1D, MaxPooling1D
-
+import matplotlib.pyplot as plt
 
 def preprocess_text(text):
     text = text.lower()                                 # makes text lowercase
@@ -29,6 +29,15 @@ def build_model(X):
     model.add(Dense(6, activation='sigmoid')) # 6 labels                                # Experimenting with NN layer where each label returns 1 or 0 (sigmoid or relu)
     model.compile(loss='binary_crossentropy', optimizer='adam')                         # Trying 'binary_crossentropy' and 'mse' for loss, Trying 'sgd' and 'adam' for optimizer
     return model
+
+def plot_loss(history):
+    plt.plot(history.history['loss'], label='Training Loss')
+    plt.plot(history.history['val_loss'], label='Validation Loss')
+    plt.title('Model Loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.show()
 
 def main():
     # Load training data
@@ -67,6 +76,24 @@ def main():
     Tepred = model.predict(TeX)
     Tepred = (Tepred > .5).astype(int)
     print(f'Testing Error rate: {zero_one_loss(Tepred, TeY)}')
+    
+    # Plotting training and validation loss
+    history = model.fit(TrX, TrY, epochs=10, validation_split=0.2)
+    plot_loss(history)
+
+    # Predictions
+    Trpred = model.predict(TrX)
+    Trpred = (Trpred > 0.5).astype(int)
+    print(f'Training Error rate: {zero_one_loss(Trpred, TrY)}')
+
+    Tepred = model.predict(TeX)
+    Tepred = (Tepred > 0.5).astype(int)
+    print(f'Testing Error rate: {zero_one_loss(Tepred, TeY)}')
+
+    # Confusion Matrix
+    cm = confusion_matrix(np.argmax(TeY, axis=1), np.argmax(Tepred, axis=1))
+    print("Confusion Matrix:")
+    print(cm)
 
 if __name__ == "__main__":
     main()
