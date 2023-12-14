@@ -1,0 +1,51 @@
+#First iteration very very slow to process data and predict
+
+#New test files were made becuase some of the test data is not being considered and flagged with -1 in 'test_label.csv'. 
+#So I wrote a small script to remove all data in 'test_labels.csv' and 'test.csv' which had -1 in the labels by matching the ids in both
+
+Understanding Keras Tokenization:
+    Initialized with a specified n number of words, based on word frequency (numwords = n)
+    "tokenizer.fit_on_texts" Analyzes the text and builds an internal vocabulary based on word frequency
+    "texts_to_sequences" Converts the text into sequences of integers. Each integer represents the index of a specific word in the vocabulary.
+    "pad_sequences" Is used to ensure all sequences in the dataset have the same length ("maxlength" pads or truncates) becuase neural networks require inputs of the same size. Since we are working with text, lengths can vary.
+
+    Imagine 2D matrix. Each row in this matrix represents a different sequence, like a sentence or a part of text. 
+    Each column in a row represents a position in the sequence up to maxlen. Maxlen is the maximum length of the sequences.
+    In each cell of the grid, there's an integer. These integers are the tokens. Each token represents a word or a part of a word from the original text. The entire grid, filled with numbers, visually represents how data is structured for processing into our model
+
+Sequential:
+    Allows us to create a model with multiple layers
+
+Embedding:
+    Transforms the integer sequences from our tokenization process into vectors of fixed size
+    Each integer in the sequence is mapped to a condensed vectors of n-dimensional (set to 100 currently) space during training (Each word transforms into a 100-dimensional vector)
+    Allows for words with similar meaning to have similar vectors. Meaning the model begins to understand the relationship/similarities between words 
+    '5000' is the size of the vocabulary (number of unique tokens)
+    '100' is the dimensionality of the embedding vectors 
+    'input_length=100' means the input sequences are 100 tokens long
+
+Conv1D:
+    Is a type of convolutional layer that slides filters across a sequence of data, in this case our sequences from Embedding.
+    '64' refers to the number of filters in the convolutional layer. Each filter extracts different features from the input.
+    '5' is the kernel size. It defines how many words are considered in each feature extraction step (sliding).
+    'activation='relu'' specifies the activation function to use after the convolution operation. 
+    By sliding across word sequences, it captures patterns in the text (like short phrases or key terms)
+
+MaxPooling1D:
+    Reduces the dimensionality of the input sequence by downsampling, which involves decreasing the amount of data/features.
+    This is achieved by sliding a window ('pool_size') across the input and taking the maximum value within that window at each step.
+    By taking the max value, it can reduce the sequence length and reduces the number of features by keeping the dominant ones
+    This in turn also helps with overfitting
+
+Bidirectional(LSTM):
+    Im assuming yall know what an LSTM does
+    Bidirectional is a wrapper of LSTM that alloes it to process the sequence forward and backward
+    Helps LSTM undertand context before and after a word sequence
+    '100' refers to the number of units in the LSTM layer, which can be thought of as the dimensionality of the output space.
+    'dropout=0.2' adds dropout for regularization, 20% of inputs will be dropped out which helps prevent overfitting.
+    'recurrent_dropout=0.2' is similar to dropout, but it applies to the recurrent connections (the connections between the units within the LSTM layer) (20% will be dropped)
+    
+Dense:
+    Is a neural network layer for making the final prediction. It compiles the learned features and patterns and outputs the predictions for multiple labels
+    The Dense layer has 6 units, one for each category ('toxic', 'severe_toxic', etc.)
+    The sigmoid activation function outputs a value between 0 and 1 for each category, which can be interpreted as the probability of the comment belonging to each category.
